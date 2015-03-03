@@ -10,11 +10,12 @@ if len(sys.argv) < 2:
     print 'Error: Did not specify a NetID'
     exit(1)
 
-# LDAP query string
-query = '(uid=' + sys.argv[1] + ')'
+query = '(uid=' + sys.argv[1] + ')'       # LDAP query string
+domain = 'ldap://directory.yale.edu:389'  # Yale Directory domain
+search_area = 'ou=People,o=yale.edu'      # No idea what this is but it works
 
-l = ldap.initialize('ldap://directory.yale.edu:389')
-r = l.search_s('ou=People,o=yale.edu', ldap.SCOPE_SUBTREE, query)
+l = ldap.initialize(domain)
+r = l.search_s(search_area, ldap.SCOPE_SUBTREE, query)
 
 # Catch bad search
 if len(r) != 1:

@@ -1,0 +1,29 @@
+#!/usr/bin/python
+
+# Usage: grab-netid netid
+
+import ldap
+import json
+import sys
+
+if len(sys.argv) < 2:
+    print 'Error: Did not specify a NetID'
+    exit(1)
+
+# LDAP query string
+query = '(uid=' + sys.argv[1] + ')'
+
+l = ldap.initialize('ldap://directory.yale.edu:389')
+r = l.search_s('ou=People,o=yale.edu', ldap.SCOPE_SUBTREE, query)
+
+# Catch bad search
+if len(r) != 1:
+    print 'Error: NetID invalid'
+    exit(1)
+
+# Select the relevant portion of the result (we will never get more than
+# one result per NetID), and encode it to JSON
+j = json.dumps(r[0][1])
+
+# Output
+print j
